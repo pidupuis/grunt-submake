@@ -8,43 +8,44 @@
 
 'use strict';
 
+var async = require('async');
+
 module.exports = function(grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
-
-  grunt.registerMultiTask('submake', 'Grunt plugin which executes submodules cmake tasks.', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
-
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
+    var runMake = function(path, next) {
+      grunt.util.spawn({
+        cmd: 'make',
+        args: [],
+        opts: {
+          cwd: path,
+          stdio: 'inherit'
         }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
+      }, function(err, result, code) {
+        if (err || code > 0) {
+          grunt.fail.warn(err);
+        } else {
+          grunt.log.ok(result);
+        }
+      });
+      next();
+    };
 
-      // Handle options.
-      src += options.punctuation;
+  grunt.registerMultiTask('submake', 'Grunt plugin which executes submodules make tasks.', function() {
+    var cb = this.async();
 
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
+    var projects = this.data.projects || this.data;
+    if (projects instanceof Array) {
+      var res = {};
+      projects.forEach(function (el) {
+        res[el] = 'default';
+      });
+      projects = res;
+    }
 
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
-    });
+    async.eachLimit(Object.keys(projects), Math.max(require('os').cpus().length, 2), function (path, next) {
+      grunt.log.writeln(path);
+      runMake(path, next);
+    }, cb);
   });
 
 };
