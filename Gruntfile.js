@@ -28,6 +28,7 @@ module.exports = function(grunt) {
       tests: ['test/fixtures/simple/tmp',
               'test/fixtures/multiple/multiple-1/tmp',
               'test/fixtures/multiple/multiple-2/tmp',
+              'test/fixtures/multipleTasks/tmp',
               'test/fixtures/argument/tmp']
     },
 
@@ -43,6 +44,11 @@ module.exports = function(grunt) {
           'test/fixtures/multiple/multiple-1',
           'test/fixtures/multiple/multiple-2'
         ]
+      },
+      multipleTasks: {
+        projects: {
+          'test/fixtures/multipleTasks': ['build', 'test']
+        }
       },
       argument: {
         projects: {
