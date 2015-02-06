@@ -12,8 +12,23 @@ var async = require('async');
 
 module.exports = function(grunt) {
 
-    var runMake = function(path, tasks, next) {
+    var runCMake = function(path, next) {
+      grunt.log.writeln('CMake');
+      grunt.util.spawn({
+        cmd: 'cmake',
+        args: ['.'],
+        opts: {
+          cwd: path,
+          stdio: 'inherit'
+        }
+      }, function() {
+        grunt.log.writeln('Hey');
+        next();
+      });
+    };
 
+    var runMake = function(path, tasks, next) {
+      grunt.log.writeln('Make');
       tasks.forEach(function(t) {
         grunt.log.writeln('make '+t);
 
@@ -46,6 +61,14 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('submake', 'Grunt plugin which executes submodules make tasks.', function() {
     var cb = this.async();
 
+    var cmake = false;
+    if (this.data.options) {
+      if (this.data.options.cmake) {
+        cmake = true;
+      }
+    }
+
+
     var projects = this.data.projects || this.data;
     if (projects instanceof Array) {
       var res = {};
@@ -55,17 +78,24 @@ module.exports = function(grunt) {
       projects = res;
     }
 
-    async.eachLimit(Object.keys(projects), Math.max(require('os').cpus().length, 2), function (path, next) {
-      grunt.log.writeln(path);
+    async.eachLimit(Object.keys(projects), 1, function (path, next) {
+      grunt.log.writeln(cmake);
 
       var tasks = projects[path];
       if (!(tasks instanceof Array)) {
         tasks = [tasks];
       }
-      grunt.log.writeln(tasks);
+      // grunt.log.writeln(tasks);
 
 
-      runMake(path, tasks, next);
+      if (cmake) {
+        runCMake(path, function() {
+          runMake(path, tasks, next);
+        });
+      }
+      else {
+        runMake(path, tasks, next);
+      }
     }, cb);
   });
 

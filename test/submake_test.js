@@ -10,7 +10,6 @@ var read = function (src) {
 exports.submake = {
   simple: function (test) {
     test.expect(1);
-    console.log('toto');
 
     var actual = read('test/fixtures/simple/tmp/output.txt');
     var expected = 'success\n';
@@ -53,4 +52,11 @@ exports.submake = {
 
     test.done();
   },
+  // cmake: function (test) {
+  //   test.expect(1);
+  //
+  //   test.equal(true, fs.existsSync('test/fixtures/cmake/helloworld'), 'should generate executable after running `cmake .` and then `make` for a subproject');
+  //
+  //   test.done();
+  // },
 };

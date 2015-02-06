@@ -54,7 +54,15 @@ module.exports = function(grunt) {
         projects: {
             'test/fixtures/argument': [['build', 'OUTPUT="success"']]
         }
-      }
+      },
+      // cmake: {
+      //   options: {
+      //     cmake: true
+      //   },
+      //   projects: [
+      //     'test/fixtures/cmake'
+      //   ]
+      // },
     },
 
     // Unit tests.
