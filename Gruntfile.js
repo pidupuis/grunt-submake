@@ -25,14 +25,22 @@ module.exports = function(grunt) {
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['tmp']
+      tests: ['test/fixtures/simple/tmp',
+              'test/fixtures/multiple/multiple-1/tmp',
+              'test/fixtures/multiple/multiple-2/tmp']
     },
 
     // Configuration to be run (and then tested).
     submake: {
       simple: {
+        projects: {
+          'test/fixtures/simple': 'build'
+        }
+      },
+      multiple: {
         projects: [
-          'test/fixtures/simple'
+          'test/fixtures/multiple/multiple-1',
+          'test/fixtures/multiple/multiple-2'
         ]
       }
     },

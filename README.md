@@ -1,6 +1,7 @@
 # grunt-submake
 
 > Grunt plugin which executes submodule's Make tasks.
+> This plugin was inspired by [grunt-subgrunt](https://github.com/tusbar/grunt-subgrunt)
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
