@@ -52,11 +52,11 @@ exports.submake = {
 
     test.done();
   },
-  // cmake: function (test) {
-  //   test.expect(1);
-  //
-  //   test.equal(true, fs.existsSync('test/fixtures/cmake/helloworld'), 'should generate executable after running `cmake .` and then `make` for a subproject');
-  //
-  //   test.done();
-  // },
+  cmake: function (test) {
+    test.expect(1);
+  
+    test.equal(true, fs.existsSync('test/fixtures/cmake/helloworld'), 'should generate executable after running `cmake .` and then `make` for a subproject');
+  
+    test.done();
+  },
 };

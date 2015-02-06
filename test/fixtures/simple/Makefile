@@ -1,2 +1,2 @@
 build:
-	mkdir tmp/ && echo 'success' > 'tmp/output.txt'
+	sleep 2 && mkdir tmp/ && echo 'success' > 'tmp/output.txt'

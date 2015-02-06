@@ -12,51 +12,47 @@ var async = require('async');
 
 module.exports = function(grunt) {
 
-    var runCMake = function(path, next) {
-      grunt.log.writeln('CMake');
+  var runCMake = function(path, next) {
+    grunt.util.spawn({
+      cmd: 'cmake',
+      args: ['.'],
+      opts: {
+        cwd: path
+      }
+    }, function() {
+      next();
+    });
+  };
+
+  var runMake = function(path, tasks, next) {
+    tasks.forEach(function(t) {
+
+      var args = [t]; // The only argument is usually the task itself (for instance `make build`)
+      if (t instanceof Array) { // Array as task means arguments (for instance `make build OUTPUT="result"`)
+        args = t;
+      }
+      else if (t === '') { // If the task is an empty string, this means no specific tasks (for instance `make`)
+        args = [];
+      }
+
       grunt.util.spawn({
-        cmd: 'cmake',
-        args: ['.'],
+        cmd: 'make',
+        args: args,
         opts: {
-          cwd: path,
-          stdio: 'inherit'
+          cwd: path
         }
-      }, function() {
-        grunt.log.writeln('Hey');
+      }, function(err, result, code) {
+        if (err || code > 0) {
+          grunt.fail.warn(err);
+        }
+        else {
+          grunt.log.ok(result);
+        }
         next();
       });
-    };
-
-    var runMake = function(path, tasks, next) {
-      grunt.log.writeln('Make');
-      tasks.forEach(function(t) {
-        grunt.log.writeln('make '+t);
-
-        var args = [t]; // The only argument is usually the task itself (for instance `make build`)
-        if (t instanceof Array) { // Array as task means arguments (for instance `make build OUTPUT="result"`)
-          args = t;
-        }
-        else if (t === '') { // If the task is an empty string, this means no specific tasks (for instance `make`)
-          args = [];
-        }
-
-        grunt.util.spawn({
-          cmd: 'make',
-          args: args,
-          opts: {
-            cwd: path,
-            stdio: 'inherit'
-          }
-        }, function(err, result, code) {
-          if (err || code > 0) {
-            grunt.fail.warn(err);
-          } else {
-            grunt.log.ok(result);
-          }
-        });
-        next();
-      });
-    };
+      
+    });
+  };
 
   grunt.registerMultiTask('submake', 'Grunt plugin which executes submodules make tasks.', function() {
     var cb = this.async();
@@ -68,35 +64,41 @@ module.exports = function(grunt) {
       }
     }
 
-
     var projects = this.data.projects || this.data;
     if (projects instanceof Array) {
       var res = {};
-      projects.forEach(function (el) {
+      projects.forEach(function(el) {
         res[el] = '';
       });
       projects = res;
     }
 
-    async.eachLimit(Object.keys(projects), 1, function (path, next) {
-      grunt.log.writeln(cmake);
+    var actions = [];
+    Object.keys(projects).forEach(function(path) {
+      actions.push(function(callback) {
 
-      var tasks = projects[path];
-      if (!(tasks instanceof Array)) {
-        tasks = [tasks];
-      }
-      // grunt.log.writeln(tasks);
+        var tasks = projects[path];
+        if (!(tasks instanceof Array)) {
+          tasks = [tasks];
+        }
+        
+        if (cmake) {
+          runCMake(path, function() {
+            runMake(path, tasks, function() {
+              callback();
+            });
+          });
+        }
+        else {
+          runMake(path, tasks, function() {
+            callback();
+          });
+        }
+      });
+    });
 
-
-      if (cmake) {
-        runCMake(path, function() {
-          runMake(path, tasks, next);
-        });
-      }
-      else {
-        runMake(path, tasks, next);
-      }
-    }, cb);
+    actions.push(cb);
+    async.series(actions);
   });
 
 };

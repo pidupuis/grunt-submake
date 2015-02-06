@@ -29,7 +29,12 @@ module.exports = function(grunt) {
               'test/fixtures/multiple/multiple-1/tmp',
               'test/fixtures/multiple/multiple-2/tmp',
               'test/fixtures/multipleTasks/tmp',
-              'test/fixtures/argument/tmp']
+              'test/fixtures/argument/tmp',
+              'test/fixtures/cmake/CMakeCache.txt',
+              'test/fixtures/cmake/CMakeFiles',
+              'test/fixtures/cmake/cmake_install.cmake',
+              'test/fixtures/cmake/Makefile',
+              'test/fixtures/cmake/helloworld']
     },
 
     // Configuration to be run (and then tested).
@@ -55,14 +60,14 @@ module.exports = function(grunt) {
             'test/fixtures/argument': [['build', 'OUTPUT="success"']]
         }
       },
-      // cmake: {
-      //   options: {
-      //     cmake: true
-      //   },
-      //   projects: [
-      //     'test/fixtures/cmake'
-      //   ]
-      // },
+      cmake: {
+        options: {
+          cmake: true
+        },
+        projects: [
+          'test/fixtures/cmake'
+        ]
+      },
     },
 
     // Unit tests.
