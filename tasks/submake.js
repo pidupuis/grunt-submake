@@ -14,14 +14,20 @@ module.exports = function(grunt) {
 
     var runMake = function(path, tasks, next) {
 
-
-
       tasks.forEach(function(t) {
         grunt.log.writeln('make '+t);
 
+        var args = [t]; // The only argument is usually the task itself (for instance `make build`)
+        if (t instanceof Array) { // Array as task means arguments (for instance `make build OUTPUT="result"`)
+          args = t;
+        }
+        else if (t === '') { // If the task is an empty string, this means no specific tasks (for instance `make`)
+          args = [];
+        }
+
         grunt.util.spawn({
           cmd: 'make',
-          args: t === '' ? [] : [t],
+          args: args,
           opts: {
             cwd: path,
             stdio: 'inherit'

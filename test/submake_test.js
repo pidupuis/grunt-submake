@@ -28,6 +28,14 @@ exports.submake = {
     var expected2 = 'success\n';
     test.equal(expected2, actual2, 'should create a file with "success" in it after running `make` for second subproject');
 
+    test.done();
+  },
+  argument: function (test) {
+    test.expect(1);
+
+    var actual = read('test/fixtures/argument/tmp/output.txt');
+    var expected = 'success\n';
+    test.equal(expected, actual, 'should create a file with "success" in it after running `make build OUTPUT="result"` for a subproject');
 
     test.done();
   },
