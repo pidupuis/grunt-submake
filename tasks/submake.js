@@ -8,43 +8,97 @@
 
 'use strict';
 
+var async = require('async');
+
 module.exports = function(grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
-
-  grunt.registerMultiTask('submake', 'Grunt plugin which executes submodules cmake tasks.', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
+  var runCMake = function(path, next) {
+    grunt.util.spawn({
+      cmd: 'cmake',
+      args: ['.'],
+      opts: {
+        cwd: path
+      }
+    }, function() {
+      next();
     });
+  };
 
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
+  var runMake = function(path, tasks, next) {
+    tasks.forEach(function(t) {
+
+      var args = [t]; // The only argument is usually the task itself (for instance `make build`)
+      if (t instanceof Array) { // Array as task means arguments (for instance `make build OUTPUT="result"`)
+        args = t;
+      }
+      else if (t === '') { // If the task is an empty string, this means no specific tasks (for instance `make`)
+        args = [];
+      }
+
+      grunt.util.spawn({
+        cmd: 'make',
+        args: args,
+        opts: {
+          cwd: path
         }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
-
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+      }, function(err, result, code) {
+        if (err || code > 0) {
+          grunt.fail.warn(err);
+        }
+        else {
+          grunt.log.ok(result);
+        }
+        next();
+      });
+      
     });
+  };
+
+  grunt.registerMultiTask('submake', 'Grunt plugin which executes submodules make tasks.', function() {
+    var cb = this.async();
+
+    var cmake = false;
+    if (this.data.options) {
+      if (this.data.options.cmake) {
+        cmake = true;
+      }
+    }
+
+    var projects = this.data.projects || this.data;
+    if (projects instanceof Array) {
+      var res = {};
+      projects.forEach(function(el) {
+        res[el] = '';
+      });
+      projects = res;
+    }
+
+    var actions = [];
+    Object.keys(projects).forEach(function(path) {
+      actions.push(function(callback) {
+
+        var tasks = projects[path];
+        if (!(tasks instanceof Array)) {
+          tasks = [tasks];
+        }
+        
+        if (cmake) {
+          runCMake(path, function() {
+            runMake(path, tasks, function() {
+              callback();
+            });
+          });
+        }
+        else {
+          runMake(path, tasks, function() {
+            callback();
+          });
+        }
+      });
+    });
+
+    actions.push(cb);
+    async.series(actions);
   });
 
 };

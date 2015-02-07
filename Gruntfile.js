@@ -25,27 +25,49 @@ module.exports = function(grunt) {
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['tmp']
+      tests: ['test/fixtures/simple/tmp',
+              'test/fixtures/multiple/multiple-1/tmp',
+              'test/fixtures/multiple/multiple-2/tmp',
+              'test/fixtures/multipleTasks/tmp',
+              'test/fixtures/argument/tmp',
+              'test/fixtures/cmake/CMakeCache.txt',
+              'test/fixtures/cmake/CMakeFiles',
+              'test/fixtures/cmake/cmake_install.cmake',
+              'test/fixtures/cmake/Makefile',
+              'test/fixtures/cmake/helloworld']
     },
 
     // Configuration to be run (and then tested).
     submake: {
-      default_options: {
-        options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
+      simple: {
+        projects: {
+          'test/fixtures/simple': 'build'
         }
       },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
+      multiple: {
+        projects: [
+          'test/fixtures/multiple/multiple-1',
+          'test/fixtures/multiple/multiple-2'
+        ]
+      },
+      multipleTasks: {
+        projects: {
+          'test/fixtures/multipleTasks': ['build', 'test']
         }
-      }
+      },
+      argument: {
+        projects: {
+            'test/fixtures/argument': [['build', 'OUTPUT="success"']]
+        }
+      },
+      cmake: {
+        options: {
+          cmake: true
+        },
+        projects: [
+          'test/fixtures/cmake'
+        ]
+      },
     },
 
     // Unit tests.
