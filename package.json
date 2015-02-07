@@ -1,6 +1,6 @@
 {
   "name": "grunt-submake",
-  "description": "Grunt plugin which executes submodules cmake tasks.",
+  "description": "Grunt plugin which executes subprojects' Make tasks.",
   "version": "0.1.0",
   "homepage": "https://github.com/pidupuis/grunt-submake",
   "author": {

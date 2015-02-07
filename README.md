@@ -1,8 +1,21 @@
 # grunt-submake
 
-> Grunt plugin which executes submodule's Make tasks.
+> Grunt plugin which executes subprojects' Make tasks.
 
-> This plugin was inspired by [grunt-subgrunt](https://github.com/tusbar/grunt-subgrunt).
+## Description
+
+If your project integrates subprojects using GNU Make, this plugin is made for you. With this plugin you will be able to run make targets inside your grunt process.
+
+For instances:
+* you can build your subproject(s) during the build of your entire project,
+* you can also run `make test` as a step of your `grunt test` task,
+* you can integrate a `make build` into your grunt-contrib-watch looking at your subproject,
+* you can run make targets independently for all of your subprojects,
+* and off course, you can also run make targets for your entire project
+
+This plugin is compatible with Cmake!
+
+This plugin was inspired by [grunt-subgrunt](https://github.com/tusbar/grunt-subgrunt), which rocks the world by the way.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -28,16 +41,25 @@ In your project's Gruntfile, add a section named `submake` to the data object pa
 ```js
 grunt.initConfig({
   submake: {
-    your_target: [
-      // Projects path
-    ],
+    your_target: {
+      options: {
+        // Target-specific options
+      },
+      projects: {
+        // Paths to subprojects' Makefile
+      }
+    },
   },
 });
 ```
 
 ### Options
 
-No options available for now.
+#### options.cmake
+Type: `bool`
+Default value: `true`
+
+Determines if you want to run `cmake` before `make`.
 
 ### Usage Examples
 
@@ -47,11 +69,39 @@ In this example, `make` is executed for a specific subproject.`
 ```js
 grunt.initConfig({
   submake: {
-    simple: {
+    target1: {
+      projects: {
+        // For each of these projects, the specified make tasks will be executed:
+        'sub-projects/module': '',
+        'sub-projects/module2': 'build'
+      }
+    },
+    target2: {
+      // Use an array to run multiple tasks:
+      'sub-projects/module': [ 'clean', 'test' ]
+    },
+    target3: {
+      // you can add parameters by add an array depth
+      'sub-projects/module': [ 'clean', [ 'build', '--dist="/usr/bin/"' ]]
+    },
+    target4: [
+      // Using an array will just execute make for each one:
+      'sub-projects/module',
+      'sub-projects/module2'
+    ],
+    target5: {
+      // you can run cmake before make tasks:
+      options: {
+        cmake: true
+      },
       projects: [
-        'test/fixtures/simple'
+        'sub-projects/module'
       ]
     }
+    target6: {
+      // no need for subprojects, you can handle interoperability by running make at the project root
+      '.': 'build'
+    },
   },
 });
 ```
@@ -62,4 +112,4 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 Do not hesitate to open an [issue](https://github.com/pidupuis/grunt-submake/issues) to report a bug. Any ideas of improvement are also welcome as issue.
 
 ## Release History
-0.1.0 : can run `make` for subprojects (no options available)
+0.1.0 : Run `make` targets for specific paths (can also run CMake)
