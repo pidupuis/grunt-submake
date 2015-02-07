@@ -40,6 +40,6 @@
     "grunt": "~0.4.5"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin", "make", "cmake", "makefile", "subproject", "submodule", "gnu make", "pasta"
   ]
 }
