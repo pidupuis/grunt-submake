@@ -62,7 +62,7 @@ module.exports = function(grunt) {
       },
       cmake: {
         options: {
-          cmake: true
+          cmake: ['.']
         },
         projects: [
           'test/fixtures/cmake'

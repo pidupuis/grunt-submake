@@ -1,7 +1,7 @@
 {
   "name": "grunt-submake",
   "description": "Run Make rules through Grunt tasks (by just specifying the Makefile path and the rules!)",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "homepage": "https://github.com/pidupuis/grunt-submake",
   "author": {
     "name": "pidupuis",
