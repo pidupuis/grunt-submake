@@ -12,10 +12,10 @@ var async = require('async');
 
 module.exports = function(grunt) {
 
-  var runCMake = function(path, next) {
+  var runCMake = function(path, args, next) {
     grunt.util.spawn({
       cmd: 'cmake',
-      args: ['.'],
+      args: args,
       opts: {
         cwd: path
       }
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
         }
         next();
       });
-      
+
     });
   };
 
@@ -61,6 +61,10 @@ module.exports = function(grunt) {
     if (this.data.options) {
       if (this.data.options.cmake) {
         cmake = true;
+        var cmakeArgs = this.data.options.cmake;
+        if (!(cmakeArgs instanceof Array)) {
+          cmakeArgs = [cmakeArgs];
+        }
       }
     }
 
@@ -81,9 +85,9 @@ module.exports = function(grunt) {
         if (!(tasks instanceof Array)) {
           tasks = [tasks];
         }
-        
+
         if (cmake) {
-          runCMake(path, function() {
+          runCMake(path, cmakeArgs, function() {
             runMake(path, tasks, function() {
               callback();
             });

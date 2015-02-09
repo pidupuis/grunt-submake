@@ -4,7 +4,7 @@
 
 ## Description
 
-If your project integrates subprojects using GNU Make, this plugin is made for you! With this plugin you will be able to run any Make rules from any Makefile inside any Grunt task.
+If your project integrates subprojects using [GNU Make](http://www.gnu.org/software/make/), this plugin is made for you! With this plugin you will be able to run any Make rules from any Makefile inside any Grunt task.
 
 Numerous use cases including:
 * Build your Make-based subprojects during the build of your Grunt-based parent project,
@@ -58,10 +58,9 @@ grunt.initConfig({
 ### Options
 
 #### options.cmake
-Type: `bool`
-Default value: `true`
+Type: `Array`
 
-Determines if you want to run `cmake` before `make` to generate the Makefile.
+Determines if you want to run `cmake` before `make` to generate the Makefile. The array contains the list of arguments (including the working path directory !).
 
 ### Usage Examples
 
@@ -70,13 +69,13 @@ grunt.initConfig({
   submake: {
     target1: {
       projects: {
-        // For each of these projects, the specified make tasks will be executed:
+        // For each of these projects, the specified make rules will be executed:
         'sub-projects/module': '',
         'sub-projects/module2': 'build'
       }
     },
     target2: {
-      // Use an array to run multiple tasks:
+      // Use an array to run multiple rules:
       'sub-projects/module': [ 'clean', 'test' ]
     },
     target3: {
@@ -89,9 +88,9 @@ grunt.initConfig({
       'sub-projects/module2'
     ],
     target5: {
-      // you can run cmake before make tasks:
+      // you can run cmake (with arguments) before make:
       options: {
-        cmake: true
+        cmake: ['.']
       },
       projects: [
         'sub-projects/module'
@@ -113,5 +112,5 @@ Do not hesitate to open an [issue](https://github.com/pidupuis/grunt-submake/iss
 
 ## Release History
 
-* Coming soon: CMake arguments
-* 0.1.0: Run `make` rules  (with arguments or not) for specific paths; Can also run CMake beforehand to generate the Makefile
+* ~0.2.0: CMake command can now be run with arguments
+* ~0.1.0: Run `make` rules  (with arguments or not) for specific paths; Can also run CMake beforehand to generate the Makefile
