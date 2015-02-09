@@ -1,19 +1,21 @@
 # grunt-submake
 
-> Grunt plugin which executes subprojects' Make tasks.
+> Run Make rules through Grunt tasks (by just specifying the Makefile path and the rules!)
 
 ## Description
 
-If your project integrates subprojects using GNU Make, this plugin is made for you. With this plugin you will be able to run make targets inside your grunt process.
+If your project integrates subprojects using GNU Make, this plugin is made for you! With this plugin you will be able to run any Make rules from any Makefile inside any Grunt task.
 
-For instances:
-* you can build your subproject(s) during the build of your entire project,
-* you can also run `make test` as a step of your `grunt test` task,
-* you can integrate a `make build` into your grunt-contrib-watch looking at your subproject,
-* you can run make targets independently for all of your subprojects,
-* and off course, you can also run make targets for your entire project
+Numerous use cases including:
+* Build your Make-based subprojects during the build of your Grunt-based parent project,
+* Run your subprojects' tests during the test process of your parent project,
+* Combine `grunt-contrib-watch` with the power of Make to rebuild modified subprojects' parts without manual server reloading,
+* Define easily a submake task for each Make-based subproject (no need to remember which rules to run for which subproject),
+* Handle easily interoperability between Make and Grunt in every case (<b>no need for subprojects specifically</b>),
+* Keep using command lines without shame (custom Grunt tasks are pretty cool but they could wait),
+* Do a lot of other thing only you could imagine!
 
-This plugin is compatible with Cmake!
+#### This plugin is compatible with <b>[CMake](http://www.cmake.org/)</b>!
 
 This plugin was inspired by [grunt-subgrunt](https://github.com/tusbar/grunt-subgrunt), which rocks the world by the way.
 
@@ -59,12 +61,9 @@ grunt.initConfig({
 Type: `bool`
 Default value: `true`
 
-Determines if you want to run `cmake` before `make`.
+Determines if you want to run `cmake` before `make` to generate the Makefile.
 
 ### Usage Examples
-
-#### Simple
-In this example, `make` is executed for a specific subproject.`
 
 ```js
 grunt.initConfig({
@@ -99,7 +98,8 @@ grunt.initConfig({
       ]
     }
     target6: {
-      // no need for subprojects, you can handle interoperability by running make at the project root
+      // no need for subprojects, you can handle interoperability
+      // by running make at the project root (or anywhere else)
       '.': 'build'
     },
   },
@@ -109,7 +109,9 @@ grunt.initConfig({
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
-Do not hesitate to open an [issue](https://github.com/pidupuis/grunt-submake/issues) to report a bug. Any ideas of improvement are also welcome as issue.
+Do not hesitate to open an [issue](https://github.com/pidupuis/grunt-submake/issues) to report a bug. Any <b>ideas of improvement</b> are also welcome as issue!
 
 ## Release History
-0.1.0 : Run `make` targets for specific paths (can also run CMake)
+
+* Coming soon: CMake arguments
+* 0.1.0: Run `make` rules  (with arguments or not) for specific paths; Can also run CMake beforehand to generate the Makefile
