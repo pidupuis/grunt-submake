@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/pidupuis/grunt-submake.svg)](https://travis-ci.org/pidupuis/grunt-submake)
 # grunt-submake
 
 > Run Make rules through Grunt tasks (by just specifying the Makefile path and the rules!)
