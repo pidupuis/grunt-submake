@@ -37,9 +37,18 @@
     "async": "^0.9.0"
   },
   "peerDependencies": {
-    "grunt": "~0.4.5"
+    "grunt": ">=0.4.0"
   },
   "keywords": [
-    "gruntplugin", "make", "cmake", "makefile", "subproject", "submodule", "interoperability", "grunt", "gnu make", "pasta"
+    "gruntplugin",
+    "make",
+    "cmake",
+    "makefile",
+    "subproject",
+    "submodule",
+    "interoperability",
+    "grunt",
+    "gnu make",
+    "pasta"
   ]
 }
